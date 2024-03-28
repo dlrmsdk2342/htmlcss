@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>계산기</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f0f0f0;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      flex-direction: column;
+    }
+
+    #calculator {
+      background-color: #a7e8dc;
+      border-radius: 5px;
+      padding: 20px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      text-align: center;
+    }
+
+    #input {
+      width: 100%;
+      margin-bottom: 10px;
+      padding: 10px;
+      font-size: 18px;
+      border: 1px solid #ccc;
+      background-color: #f0f0f0;
+      border-radius: 5px;
+      box-sizing: border-box;
+    }
+
+    button {
+      width: 50px;
+      height: 50px;
+      margin: 5px;
+      font-size: 16px;
+      background-color: #f0f0f0;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background-color 0.3s; 
+    }
+
+    button:hover {
+      background-color: #e0e0e0;
+    }
+
+    button:active {
+      background-color: #d0d0d0;
+    }
+  </style>
+</head>
+<body>
+  <h1>계산기</h1>
+  <div id="calculator">
+    <input type="text" id="input" disabled>
+    <br>
+    <button onclick="addToInput(1)">1</button>
+    <button onclick="addToInput(2)">2</button>
+    <button onclick="addToInput(3)">3</button>
+    <button onclick="addToInput('+')">+</button>
+    <br>
+    <button onclick="addToInput(4)">4</button>
+    <button onclick="addToInput(5)">5</button>
+    <button onclick="addToInput(6)">6</button>
+    <button onclick="addToInput('-')">-</button>
+    <br>
+    <button onclick="addToInput(7)">7</button>
+    <button onclick="addToInput(8)">8</button>
+    <button onclick="addToInput(9)">9</button>
+    <button onclick="addToInput('*')">*</button>
+    <br>
+    <button onclick="addToInput(0)">0</button>
+    <button onclick="clearInput()">Clear</button>
+    <button onclick="calculate()">=</button>
+    <button onclick="addToInput('/')">/</button>
+  </div>
+
+  <script>
+    let input = document.getElementById('input');
+    let currentInput = '';
+
+    function addToInput(value) {
+      currentInput += value;
+      updateDisplay();
+    }
+
+    function clearInput() {
+      currentInput = '';
+      updateDisplay();
+    }
+
+    function calculate() {
+      try {
+        let result = Function('"use strict";return (' + currentInput + ')')();
+        input.value = result;
+        currentInput = result.toString();
+      } catch (error) {
+        input.value = 'Error';
+        currentInput = '';
+      }
+    }
+
+    function updateDisplay() {
+      input.value = currentInput;
+    }
+  </script>
+</body>
+</html>
