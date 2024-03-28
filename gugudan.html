@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>구구단</title>
+    <style>
+      body {
+        background-color: azure;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+      }
+
+      button {
+            padding: 5px 10px;
+            border-radius: 4px;
+            border: none;
+            background-color: #fff;
+            color: black;
+            cursor: pointer;
+        }
+
+      p {
+        color: #007bff;
+      }
+
+    </style>
+  </head>
+  <body>
+    <h1>구구단</h1>
+    <div>
+    <br>
+    <button onclick="Press(1)">1</button>
+    <button onclick="Press(2)">2</button>
+    <button onclick="Press(3)">3</button>
+    <button onclick="Press(4)">4</button>
+    <button onclick="Press(5)">5</button>
+    <button onclick="Press(6)">6</button>
+    <button onclick="Press(7)">7</button>
+    <button onclick="Press(8)">8</button>
+    <button onclick="Press(9)">9</button>
+    <br>
+    </div>
+    <p id="output"></p>
+     <script>
+      function printMultiplicationTable(num) {
+        let output = "";
+        for(let i = 1; i <= 9; i++) {
+          output += num + " x " + i + " = " + (num * i) + "<br>";
+        }
+        document.getElementById("output").innerHTML = output;
+      }
+
+      function Press(value){
+        printMultiplicationTable(value)
+      }
+     </script>
+  </body>
+</html>
