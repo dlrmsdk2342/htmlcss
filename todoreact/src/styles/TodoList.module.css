@@ -1,0 +1,109 @@
+.container {
+  max-width: 800px;
+  margin: 40px auto;
+  padding: 50px;
+  background-color: rgb(240, 228, 228);
+  border-radius: 10px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+}
+
+.todoListTitle {
+  font-size: 50px;
+  color:#d4f3e7;
+  text-shadow: 2px 2px 4px rgba(59, 66, 64, 0.9); 
+}
+
+.inputbutton {
+  display: flex;
+  flex-direction: row;
+}
+
+input[type="text"].itemInput {
+  width: 70%;
+  padding: 15px;
+  margin-bottom: 20px;
+  font-size: 20px;
+  border-color: #d4f3e7;
+  border-width: 3px;
+  flex-grow: 1;
+  margin-right: 20px;
+  height: 50px;
+}
+
+button.addButton {
+  padding: 5px;
+  background-color: #6b7973;
+  color: #fff;
+  border: 1px solid #6b7973;
+  border-radius: 5px;
+  cursor: pointer;
+  font-weight: bold;
+  font-size: 20px;
+  height: 50px;
+  width: 150px;
+}
+
+button.addButton:hover {
+  background-color: rgb(241, 163, 163);
+  border: rgb(241, 163, 163);
+  color: #fff;
+}
+
+.todoList {
+  list-style: none;
+  padding: 0;
+}
+
+.todoItem {
+  display: flex;
+  align-items: center;
+  margin-bottom: 8px;
+  background-color: #d4f3e7;
+  padding: 10px;
+  border-radius: 5px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.todoText {
+  margin-left: 20px;
+  font-size: 18px;
+  flex-grow: 1;
+}
+
+.todoCheckbox {
+  appearance: none;
+  width: 25px;
+  height: 25px;
+  border: 2px solid #6b7973;
+  border-radius: 4px;
+  outline: none;
+  cursor: pointer;
+  margin-right: 10px;
+  background-color: #fff;
+}
+
+.todoCheckbox:checked {
+  background-color: #6b7973;
+}
+
+.todoCheckbox:checked::after {
+  content: '\2713';
+  padding: 5px;
+  font-size: 15px;
+  color: #fff;
+}
+
+.deleteButton {
+  padding: 8px 12px;
+  background-color: #6b7973;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.deleteButton:hover {
+  background-color: rgb(241, 163, 163);
+}
