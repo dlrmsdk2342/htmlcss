@@ -44,6 +44,14 @@ const TodoList = () => {
     );
   };
 
+  const editTodo = (id, newText) => {
+    setTodos(
+      todos.map((todo) => {
+        return todo.id === id ? { ...todo, text: newText} : todo;
+      })
+    );
+  };
+
   // deleteTodo 함수는 할 일을 목록에서 삭제하는 함수입니다.
   const deleteTodo = (id) => {
     // 해당 id를 가진 할 일을 제외한 나머지 목록을 새로운 상태로 저장합니다.
@@ -80,6 +88,7 @@ const TodoList = () => {
             todo={todo}
             onToggle={() => toggleTodo(todo.id)}
             onDelete={() => deleteTodo(todo.id)}
+            onEdit={(newText) => editTodo(todo.id, newText)}
           />
         ))}
       </ul>
