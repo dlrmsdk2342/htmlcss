@@ -26,10 +26,10 @@ const TodoItem = ({ todo, onToggle, onDelete, onEdit }) => {
 
   // 할 일 항목을 렌더링합니다.
   return (
-    <li className={styles.todoItem}>
+    <li className="bg-green-200 flex items-center justify-between py-2 px-4 border-b border-gray-200 shadow-md mb-1">
       {/* 체크박스를 렌더링하고, 체크박스의 상태를 할 일의 완료 상태와 동기화합니다. */}
       <input
-        className={styles.todoCheckbox}
+        className="mr-4"
         type="checkbox"
         checked={todo.completed}
         onChange={onToggle}
@@ -39,18 +39,18 @@ const TodoItem = ({ todo, onToggle, onDelete, onEdit }) => {
       {isEditing ? (
         <div>
         <input
-          className={styles.editInput}
+          className="mr-2 flex-grow border-2 border-gray-300 rounded-md"
           type="text"
           value={editText}
           onChange={(e) => setEditText(e.target.value)}
           onBlur={handleSave}
           autoFocus
         />
-        <button className={styles.editButton} onClick={handleSave}>Edit</button>
+        <button className="bg-green-800 hover:bg-green-600 text-white py-1 px-2 rounded" onClick={handleSave}>Edit</button>
         </div>
       ) : (
         <span
-          className={styles.todoText}
+          className="ml-5 text-lg flex-grow"
           style={{ textDecoration: todo.completed ? "line-through" : "none" }}
           onClick={activateEditMode}
         >
@@ -59,7 +59,7 @@ const TodoItem = ({ todo, onToggle, onDelete, onEdit }) => {
       )}
 
       {/* 삭제 버튼을 렌더링합니다. */}
-      <button className={styles.deleteButton} onClick={onDelete}>Delete</button>
+      <button className="bg-green-800 text-white hover:bg-red-700 py-1 px-2 rounded" onClick={onDelete}>Delete</button>
     </li>
   );
 };

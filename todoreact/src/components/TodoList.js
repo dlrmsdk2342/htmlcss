@@ -65,18 +65,18 @@ const TodoList = () => {
 
   // 컴포넌트를 렌더링합니다.
   return (
-    <div className={styles.container}>
-      <h1 className={styles.todoListTitle}>Todo List</h1>
+    <div className="bg-white rounded-lg shadow-md p-4 mt-8 max-w-lg mx-auto">
+      <h1 className="text-5xl font-bold text-green-800 shadow-x1 mt-4 mb-8">Todo List</h1>
       {/* 할 일을 입력받는 텍스트 필드입니다. */}
-      <div className={styles.inputbutton}>
+      <div className="flex mt-4 mb-8">
       <input
         type="text"
-        className={styles.itemInput}
+        className="flex-grow border-2 border-gray-300 p-2 rounded-md"
         value={input}
         onChange={(e) => setInput(e.target.value)}
       />
       {/* 할 일을 추가하는 버튼입니다. */}
-      <button className={styles.addButton} onClick={addTodo}>
+      <button className="ml-2 px-4 py-2 bg-green-800 text-white rounded-md shadow-md hover:bg-green-600" onClick={addTodo}>
         Add Todo
       </button>
       </div>
