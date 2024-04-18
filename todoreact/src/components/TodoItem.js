@@ -7,6 +7,8 @@
 import React, {useState} from "react";
 import styles from "@/styles/TodoList.module.css";
 
+import { Button } from "@/components/ui/button"
+
 const TodoItem = ({ todo, onToggle, onDelete, onEdit }) => {
   // 수정 모드인지 여부를 관리하는 상태를 정의합니다.
   const [isEditing, setIsEditing] = useState(false);
@@ -26,10 +28,10 @@ const TodoItem = ({ todo, onToggle, onDelete, onEdit }) => {
 
   // 할 일 항목을 렌더링합니다.
   return (
-    <li className="bg-green-200 flex items-center justify-between py-2 px-4 border-b border-gray-200 shadow-md mb-1">
+    <li className="bg-green-100 flex items-center justify-between py-2 px-4 border-b border-gray-200 shadow-md mb-1">
       {/* 체크박스를 렌더링하고, 체크박스의 상태를 할 일의 완료 상태와 동기화합니다. */}
       <input
-        className="mr-4"
+        className="h-5 w-5 border-gray-300 rounded focus:ring-0 mr-4"
         type="checkbox"
         checked={todo.completed}
         onChange={onToggle}
@@ -39,14 +41,14 @@ const TodoItem = ({ todo, onToggle, onDelete, onEdit }) => {
       {isEditing ? (
         <div>
         <input
-          className="mr-2 flex-grow border-2 border-gray-300 rounded-md"
+          className="p-1 mr-3 flex-grow border-2 border-gray-300 rounded-md"
           type="text"
           value={editText}
           onChange={(e) => setEditText(e.target.value)}
           onBlur={handleSave}
           autoFocus
         />
-        <button className="bg-green-800 hover:bg-green-600 text-white py-1 px-2 rounded" onClick={handleSave}>Edit</button>
+        <Button className="btn mr-12" onClick={handleSave}>Edit</Button>
         </div>
       ) : (
         <span
@@ -59,7 +61,7 @@ const TodoItem = ({ todo, onToggle, onDelete, onEdit }) => {
       )}
 
       {/* 삭제 버튼을 렌더링합니다. */}
-      <button className="bg-green-800 text-white hover:bg-red-700 py-1 px-2 rounded" onClick={onDelete}>Delete</button>
+      <Button variant="outline" onClick={onDelete}>Delete</Button>
     </li>
   );
 };

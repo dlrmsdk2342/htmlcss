@@ -9,6 +9,9 @@ import React, { useState } from "react";
 import TodoItem from "@/components/TodoItem";
 import styles from "@/styles/TodoList.module.css";
 
+import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
+
 // TodoList 컴포넌트를 정의합니다.
 const TodoList = () => {
   // 상태를 관리하는 useState 훅을 사용하여 할 일 목록과 입력값을 초기화합니다.
@@ -68,17 +71,17 @@ const TodoList = () => {
     <div className="bg-white rounded-lg shadow-md p-4 mt-8 max-w-lg mx-auto">
       <h1 className="text-5xl font-bold text-green-800 shadow-x1 mt-4 mb-8">Todo List</h1>
       {/* 할 일을 입력받는 텍스트 필드입니다. */}
-      <div className="flex mt-4 mb-8">
-      <input
+      <div className="flex w-full items-center space-x-4 mt-4 mb-8">
+      <Input
         type="text"
-        className="flex-grow border-2 border-gray-300 p-2 rounded-md"
+        className="input"
         value={input}
         onChange={(e) => setInput(e.target.value)}
       />
       {/* 할 일을 추가하는 버튼입니다. */}
-      <button className="ml-2 px-4 py-2 bg-green-800 text-white rounded-md shadow-md hover:bg-green-600" onClick={addTodo}>
+      <Button className="btn" onClick={addTodo}>
         Add Todo
-      </button>
+      </Button>
       </div>
       {/* 할 일 목록을 렌더링합니다. */}
       <ul>
