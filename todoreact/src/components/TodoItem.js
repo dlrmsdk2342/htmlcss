@@ -9,7 +9,7 @@ import styles from "@/styles/TodoList.module.css";
 
 import { Button } from "@/components/ui/button"
 
-const TodoItem = ({ todo, onToggle, onDelete, onEdit }) => {
+const TodoItem = ({ todo, date, onToggle, onDelete, onEdit }) => {
   // 수정 모드인지 여부를 관리하는 상태를 정의합니다.
   const [isEditing, setIsEditing] = useState(false);
   // 수정할 내용을 저장하는 상태를 정의합니다.
@@ -59,6 +59,8 @@ const TodoItem = ({ todo, onToggle, onDelete, onEdit }) => {
           {todo.text}
         </span>
       )}
+
+      <span>{date}</span>
 
       {/* 삭제 버튼을 렌더링합니다. */}
       <Button variant="outline" onClick={onDelete}>Delete</Button>

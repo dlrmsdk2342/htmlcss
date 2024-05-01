@@ -11,6 +11,7 @@ import styles from "@/styles/TodoList.module.css";
 
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 // firebase 관련 모듈을 불러옵니다.
 import { db } from "@/firebase";
@@ -24,6 +25,7 @@ import {
   deleteDoc,
   orderBy,
   where,
+  serverTimestamp,
 } from "firebase/firestore";
 
 // DB의 todos 컬렉션 참조를 만듭니다. 컬렉션 사용시 잘못된 컬렉션 이름 사용을 방지합니다.
@@ -34,14 +36,27 @@ const TodoList = () => {
   // 상태를 관리하는 useState 훅을 사용하여 할 일 목록과 입력값을 초기화합니다.
   const [todos, setTodos] = useState([]);
   const [input, setInput] = useState("");
+  const [sortByDate, setSortByDate] = useState("default");
+  const [filterBy, setFilterBy] = useState("All");
 
   useEffect(() => {
     getTodos();
   }, []);
 
-  const getTodos = async () => {
+  const getTodos = async (sortByDate, filterBy) => {
     // Firestore 쿼리를 만듭니다.
-    const q = query(todoCollection);
+    let q = query(todoCollection);
+    if(sortByDate === "ascending") {
+      q = query(todoCollection, orderBy("date"));
+    } else if (sortByDate === "descending") {
+      q = query(todoCollection, orderBy("date", "desc"));
+    }
+
+    if (filterBy === "completed") {
+      q = query(todoCollection, where("completed", "==", true));
+    } else if (filterBy === "uncompleted") {
+      q = query(todoCollection, where("completed", "==", false));
+    }
     // const q = query(collection(db, "todos"), where("user", "==", user.uid));
     // const q = query(todoCollection, orderBy("datetime", "asc"));
 
@@ -57,6 +72,17 @@ const TodoList = () => {
     });
 
     setTodos(newTodos);
+  };
+
+  const sortTodosByDate = (value) => {
+    // 정렬 상태를 변경합니다.
+    setSortByDate(value);
+    getTodos(value);
+  };
+  
+  const filterTodosBy = (value) => {
+    setFilterBy(value);
+    getTodos(sortByDate, value); // 정렬 및 필터 기준을 인자로 넘겨줌
   };
 
   // addTodo 함수는 입력값을 이용하여 새로운 할 일을 목록에 추가하는 함수입니다.
@@ -75,6 +101,7 @@ const TodoList = () => {
     const docRef = await addDoc(todoCollection, {
       text: input,
       completed: false,
+      date: serverTimestamp(),
     });
 
     // id 값을 Firestore 에 저장한 값으로 지정합니다.
@@ -105,6 +132,10 @@ const TodoList = () => {
   };
 
   const editTodo = (id, newText) => {
+    // Firestore에서 해당 할 일을 업데이트합니다.
+    const todoDoc = doc(todoCollection, id);
+    updateDoc(todoDoc, { text: newText });
+
     setTodos(
       todos.map((todo) => {
         return todo.id === id ? { ...todo, text: newText} : todo;
@@ -144,12 +175,37 @@ const TodoList = () => {
         Add Todo
       </Button>
       </div>
+      <div className="flex w-full items-center space-x-4 mb-4">
+      <Select value={sortByDate} onValueChange={sortTodosByDate}>
+        <SelectTrigger>
+        <SelectValue placeholder="Sort By" />
+        </SelectTrigger>
+        <SelectContent>
+          <SelectItem value="default">Default</SelectItem>
+          <SelectItem value="ascending">Date (Ascending)</SelectItem>
+          <SelectItem value="descending">Date (Descending)</SelectItem>
+        </SelectContent>
+      </Select>
+
+      <Select value={filterBy} onValueChange={filterTodosBy} disabled={sortByDate !== "default"}>
+        <SelectTrigger>
+          <SelectValue placeholder="All" />
+        </SelectTrigger>
+        <SelectContent>
+          <SelectItem value="All">All</SelectItem>
+          <SelectItem value="completed">Completed</SelectItem>
+          <SelectItem value="uncompleted">Uncompleted</SelectItem>
+        </SelectContent>
+      </Select>
+
+      </div>
       {/* 할 일 목록을 렌더링합니다. */}
       <ul>
         {todos.map((todo) => (
           <TodoItem
             key={todo.id}
             todo={todo}
+            date={todo.date.toDate().toLocaleDateString()}
             onToggle={() => toggleTodo(todo.id)}
             onDelete={() => deleteTodo(todo.id)}
             onEdit={(newText) => editTodo(todo.id, newText)}
