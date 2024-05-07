@@ -6,6 +6,8 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
+import { useSession } from "next-auth/react";
 import TodoItem from "@/components/TodoItem";
 import styles from "@/styles/TodoList.module.css";
 
@@ -25,7 +27,7 @@ import {
   deleteDoc,
   orderBy,
   where,
-  serverTimestamp,
+  Timestamp,
 } from "firebase/firestore";
 
 // DB의 todos 컬렉션 참조를 만듭니다. 컬렉션 사용시 잘못된 컬렉션 이름 사용을 방지합니다.
@@ -39,27 +41,39 @@ const TodoList = () => {
   const [sortByDate, setSortByDate] = useState("default");
   const [filterBy, setFilterBy] = useState("All");
 
+  const router = useRouter();
+  const { data } = useSession({
+    required: true,
+    onUnauthenticated() {
+      router.replace("/login");
+    },
+  });
+
   useEffect(() => {
+    //console.log("data", data);
     getTodos();
-  }, []);
+  }, [data]);
 
   const getTodos = async (sortByDate, filterBy) => {
     // Firestore 쿼리를 만듭니다.
-    let q = query(todoCollection);
-    if(sortByDate === "ascending") {
-      q = query(todoCollection, orderBy("date"));
-    } else if (sortByDate === "descending") {
-      q = query(todoCollection, orderBy("date", "desc"));
-    }
 
-    if (filterBy === "completed") {
-      q = query(todoCollection, where("completed", "==", true));
-    } else if (filterBy === "uncompleted") {
-      q = query(todoCollection, where("completed", "==", false));
-    }
     // const q = query(collection(db, "todos"), where("user", "==", user.uid));
     // const q = query(todoCollection, orderBy("datetime", "asc"));
+    if (!data?.user?.name) return;
 
+    let q = query(todoCollection, where("userName", "==", data?.user?.name));
+    
+    if (sortByDate === "ascending") {
+      q = query(q, orderBy("date"));
+    } else if (sortByDate === "descending") {
+      q = query(q, orderBy("date", "desc"));
+    }
+    
+    if (filterBy === "completed") {
+      q = query(q, where("completed", "==", true));
+    } else if (filterBy === "uncompleted") {
+      q = query(q, where("completed", "==", false));
+    }
     // Firestore 에서 할 일 목록을 조회합니다.
     const results = await getDocs(q);
     const newTodos = [];
@@ -79,11 +93,11 @@ const TodoList = () => {
     setSortByDate(value);
     getTodos(value);
   };
-  
+
   const filterTodosBy = (value) => {
     setFilterBy(value);
     getTodos(sortByDate, value); // 정렬 및 필터 기준을 인자로 넘겨줌
-  };
+  };  
 
   // addTodo 함수는 입력값을 이용하여 새로운 할 일을 목록에 추가하는 함수입니다.
   const addTodo = async () => {
@@ -97,11 +111,13 @@ const TodoList = () => {
     // }
     // ...todos => {id: 1, text: "할일1", completed: false}, {id: 2, text: "할일2", completed: false}}, ..
 
+    const timestamp = new Date();
     // Firestore 에 추가한 할 일을 저장합니다.
     const docRef = await addDoc(todoCollection, {
+      userName: data?.user?.name,
       text: input,
       completed: false,
-      date: serverTimestamp(),
+      date: timestamp,
     });
 
     // id 값을 Firestore 에 저장한 값으로 지정합니다.
@@ -161,7 +177,7 @@ const TodoList = () => {
   // 컴포넌트를 렌더링합니다.
   return (
     <div className="bg-white rounded-lg shadow-md p-4 mt-8 max-w-lg mx-auto">
-      <h1 className="text-5xl font-bold text-green-800 shadow-x1 mt-4 mb-8">Todo List</h1>
+      <h1 className="text-5xl font-bold text-green-800 shadow-x1 mt-4 mb-8">{data?.user?.name}'s Todo List</h1>
       {/* 할 일을 입력받는 텍스트 필드입니다. */}
       <div className="flex w-full items-center space-x-4 mt-4 mb-8">
       <Input
@@ -187,7 +203,7 @@ const TodoList = () => {
         </SelectContent>
       </Select>
 
-      <Select value={filterBy} onValueChange={filterTodosBy} disabled={sortByDate !== "default"}>
+      <Select value={filterBy} onValueChange={filterTodosBy}>
         <SelectTrigger>
           <SelectValue placeholder="All" />
         </SelectTrigger>
@@ -197,7 +213,6 @@ const TodoList = () => {
           <SelectItem value="uncompleted">Uncompleted</SelectItem>
         </SelectContent>
       </Select>
-
       </div>
       {/* 할 일 목록을 렌더링합니다. */}
       <ul>
@@ -205,7 +220,7 @@ const TodoList = () => {
           <TodoItem
             key={todo.id}
             todo={todo}
-            date={todo.date.toDate().toLocaleDateString()}
+            date={todo.date instanceof Timestamp ? todo.date.toDate().toLocaleString() : todo.date}
             onToggle={() => toggleTodo(todo.id)}
             onDelete={() => deleteTodo(todo.id)}
             onEdit={(newText) => editTodo(todo.id, newText)}
