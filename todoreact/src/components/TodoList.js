@@ -112,6 +112,7 @@ const TodoList = () => {
     // ...todos => {id: 1, text: "할일1", completed: false}, {id: 2, text: "할일2", completed: false}}, ..
 
     const timestamp = new Date();
+    try {
     // Firestore 에 추가한 할 일을 저장합니다.
     const docRef = await addDoc(todoCollection, {
       userName: data?.user?.name,
@@ -123,6 +124,12 @@ const TodoList = () => {
     // id 값을 Firestore 에 저장한 값으로 지정합니다.
     setTodos([...todos, { id: docRef.id, text: input, completed: false }]);
     setInput("");
+
+    // 새로운 할 일이 추가되었으므로 할 일 목록 다시 가져오기
+    getTodos();
+  } catch (error) {
+    console.error("Error adding todo: ", error);
+  }
   };
 
   // toggleTodo 함수는 체크박스를 눌러 할 일의 완료 상태를 변경하는 함수입니다.
@@ -147,10 +154,20 @@ const TodoList = () => {
     );
   };
 
-  const editTodo = (id, newText) => {
+  const editTodo = async (id, newText) => {
+    const todo = todos.find(todo => todo.id === id);
+    const currentUser = data?.user?.name;
+    if (!todo || !currentUser) {
+      alert("You can't edit this todo.");
+      return;
+    }
+    if (todo.userName !== currentUser) {
+      alert("You can only edit your own todos.");
+      return;
+    }
     // Firestore에서 해당 할 일을 업데이트합니다.
     const todoDoc = doc(todoCollection, id);
-    updateDoc(todoDoc, { text: newText });
+    await updateDoc(todoDoc, { text: newText });
 
     setTodos(
       todos.map((todo) => {
@@ -160,10 +177,20 @@ const TodoList = () => {
   };
 
   // deleteTodo 함수는 할 일을 목록에서 삭제하는 함수입니다.
-  const deleteTodo = (id) => {
+  const deleteTodo = async (id) => {
+    const todo = todos.find(todo => todo.id === id);
+    const currentUser = data?.user?.name;
+    if (!todo || !currentUser) {
+      alert("You can't delete this todo.");
+      return;
+    }
+    if (todo.userName !== currentUser) {
+      alert("You can only delete your own todos.");
+      return;
+    }
     // Firestore 에서 해당 id를 가진 할 일을 삭제합니다.
     const todoDoc = doc(todoCollection, id);
-    deleteDoc(todoDoc);
+    await deleteDoc(todoDoc);
 
     // 해당 id를 가진 할 일을 제외한 나머지 목록을 새로운 상태로 저장합니다.
     // setTodos(todos.filter((todo) => todo.id !== id));
